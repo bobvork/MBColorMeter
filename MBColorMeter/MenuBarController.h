@@ -8,6 +8,27 @@
 
 #import <Foundation/Foundation.h>
 
-@interface MenuBarController : NSObject
+typedef enum {
+	ColorDisplayModeRGB255 = 0,
+	ColorDisplayModeRGBFloat,
+	ColorDisplayModeHex,
+
+	// Not a display mode, only used internally to toggle:
+	ColorDisplayModeNumber		
+} ColorDisplayMode;
+
+@interface MenuBarController : NSObject {
+	NSStatusItem *statusBarItem;
+	int testInt;
+	ColorDisplayMode colorDisplayMode;
+	NSInteger lastX, lastY;
+}
+
+@property (nonatomic, retain) NSString *statusText;
+@property (nonatomic, retain) NSTimer *mouseUpdateTimer;
+@property (weak) IBOutlet NSView *cView;
+@property (weak) IBOutlet NSColorWell *colorWell;
+
+@property (nonatomic, retain) NSDictionary *titleAttributes;
 
 @end

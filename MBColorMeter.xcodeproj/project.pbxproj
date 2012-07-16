@@ -13,6 +13,8 @@
 		0E5EBEBD15B345060069BB02 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 0E5EBEBB15B345060069BB02 /* Credits.rtf */; };
 		0E5EBEC015B345060069BB02 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E5EBEBF15B345060069BB02 /* AppDelegate.m */; };
 		0E5EBEC315B345060069BB02 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0E5EBEC115B345060069BB02 /* MainMenu.xib */; };
+		0E5EBECB15B345A00069BB02 /* MenuBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E5EBECA15B345A00069BB02 /* MenuBarController.m */; };
+		0E5EBECE15B3671A0069BB02 /* StatusItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E5EBECD15B3671A0069BB02 /* StatusItemView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -21,14 +23,18 @@
 		0E5EBEAF15B345060069BB02 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		0E5EBEB015B345060069BB02 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		0E5EBEB115B345060069BB02 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		0E5EBEB415B345060069BB02 /* MBColorMeter-Info.plist */ = {isa = PBXFileReference; path = "MBColorMeter-Info.plist"; sourceTree = "<group>"; };
+		0E5EBEB415B345060069BB02 /* MBColorMeter-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MBColorMeter-Info.plist"; sourceTree = "<group>"; };
 		0E5EBEB615B345060069BB02 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		0E5EBEB815B345060069BB02 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		0E5EBEBA15B345060069BB02 /* MBColorMeter-Prefix.pch */ = {isa = PBXFileReference; path = "MBColorMeter-Prefix.pch"; sourceTree = "<group>"; };
+		0E5EBEBA15B345060069BB02 /* MBColorMeter-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MBColorMeter-Prefix.pch"; sourceTree = "<group>"; };
 		0E5EBEBC15B345060069BB02 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
-		0E5EBEBE15B345060069BB02 /* AppDelegate.h */ = {isa = PBXFileReference; path = AppDelegate.h; sourceTree = "<group>"; };
+		0E5EBEBE15B345060069BB02 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		0E5EBEBF15B345060069BB02 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		0E5EBEC215B345060069BB02 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		0E5EBEC915B345A00069BB02 /* MenuBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuBarController.h; sourceTree = "<group>"; };
+		0E5EBECA15B345A00069BB02 /* MenuBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MenuBarController.m; sourceTree = "<group>"; };
+		0E5EBECC15B3671A0069BB02 /* StatusItemView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StatusItemView.h; sourceTree = "<group>"; };
+		0E5EBECD15B3671A0069BB02 /* StatusItemView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StatusItemView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,6 +92,10 @@
 				0E5EBEBF15B345060069BB02 /* AppDelegate.m */,
 				0E5EBEC115B345060069BB02 /* MainMenu.xib */,
 				0E5EBEB315B345060069BB02 /* Supporting Files */,
+				0E5EBEC915B345A00069BB02 /* MenuBarController.h */,
+				0E5EBECA15B345A00069BB02 /* MenuBarController.m */,
+				0E5EBECC15B3671A0069BB02 /* StatusItemView.h */,
+				0E5EBECD15B3671A0069BB02 /* StatusItemView.m */,
 			);
 			path = MBColorMeter;
 			sourceTree = "<group>";
@@ -168,6 +178,8 @@
 			files = (
 				0E5EBEB915B345060069BB02 /* main.m in Sources */,
 				0E5EBEC015B345060069BB02 /* AppDelegate.m in Sources */,
+				0E5EBECB15B345A00069BB02 /* MenuBarController.m in Sources */,
+				0E5EBECE15B3671A0069BB02 /* StatusItemView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

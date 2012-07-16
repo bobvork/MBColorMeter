@@ -11,10 +11,11 @@
 @implementation AppDelegate
 
 @synthesize window = _window;
+@synthesize mbController;
 
-- (void)applicationDidFinishLaunching:(NSNotification *)aNotification
-{
+- (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
 	// Insert code here to initialize your application
+	mbController = [MenuBarController new];
 }
 
 @end
