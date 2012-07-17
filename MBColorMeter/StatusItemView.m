@@ -9,11 +9,8 @@
 #import "StatusItemView.h"
 
 @implementation StatusItemView
-<<<<<<< HEAD
 @synthesize label;
 @synthesize colorWell;
-=======
->>>>>>> 60452b15d9138a35d9eb81052c060c9a5feaae61
 
 - (id)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
