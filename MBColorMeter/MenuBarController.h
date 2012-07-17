@@ -28,7 +28,10 @@ typedef enum {
 @property (nonatomic, retain) NSTimer *mouseUpdateTimer;
 @property (weak) IBOutlet NSView *cView;
 @property (weak) IBOutlet NSColorWell *colorWell;
+<<<<<<< HEAD
 @property (weak) IBOutlet NSTextField *label;
+=======
+>>>>>>> 60452b15d9138a35d9eb81052c060c9a5feaae61
 
 @property (nonatomic, retain) NSDictionary *titleAttributes;
 

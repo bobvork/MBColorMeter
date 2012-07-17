@@ -11,7 +11,10 @@
 @implementation MenuBarController
 @synthesize cView;
 @synthesize colorWell;
+<<<<<<< HEAD
 @synthesize label;
+=======
+>>>>>>> 60452b15d9138a35d9eb81052c060c9a5feaae61
 
 @synthesize statusText, mouseUpdateTimer, titleAttributes;
 
@@ -24,10 +27,13 @@
 		statusBarItem.target = self;
 		statusBarItem.action = @selector(statusBarItemClicked:);
 		
+<<<<<<< HEAD
 		[NSBundle loadNibNamed:@"StatusItemView" owner:self];
 		
 		statusBarItem.view = self.cView;
 		
+=======
+>>>>>>> 60452b15d9138a35d9eb81052c060c9a5feaae61
 		NSFont *font = [NSFont fontWithName:@"Inconsolata" size:14.0];
 		self.titleAttributes = [NSDictionary dictionaryWithObject:font forKey:NSFontAttributeName];
 		
@@ -86,8 +92,12 @@
 		titleString = [NSString stringWithFormat:@"RGB(%0.2f, %0.2f, %0.2f)", pixel[0]/255,0, pixel[1]/255.0, pixel[2]/255.0];
 	}
 	
+<<<<<<< HEAD
 	//statusBarItem.attributedTitle = [[NSAttributedString alloc] initWithString:titleString attributes:self.titleAttributes];
 	[self.label setStringValue:titleString];
+=======
+	statusBarItem.attributedTitle = [[NSAttributedString alloc] initWithString:titleString attributes:self.titleAttributes];
+>>>>>>> 60452b15d9138a35d9eb81052c060c9a5feaae61
 	
 	NSColor *color = [NSColor colorWithDeviceRed:red green:green blue:blue alpha:1.0];
 	

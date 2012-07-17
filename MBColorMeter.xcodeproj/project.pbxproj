@@ -16,6 +16,7 @@
 		0E5EBECB15B345A00069BB02 /* MenuBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E5EBECA15B345A00069BB02 /* MenuBarController.m */; };
 		0E5EBECE15B3671A0069BB02 /* StatusItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E5EBECD15B3671A0069BB02 /* StatusItemView.m */; };
 		0ED8D09B15B4957C008CB912 /* StatusItemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0ED8D09A15B4957C008CB912 /* StatusItemView.xib */; };
+
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */

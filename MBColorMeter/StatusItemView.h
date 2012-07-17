@@ -9,7 +9,10 @@
 #import <Cocoa/Cocoa.h>
 
 @interface StatusItemView : NSView
+<<<<<<< HEAD
 @property (weak) IBOutlet NSTextField *label;
 @property (weak) IBOutlet NSColorWell *colorWell;
+=======
+>>>>>>> 60452b15d9138a35d9eb81052c060c9a5feaae61
 
 @end
