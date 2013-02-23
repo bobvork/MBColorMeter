@@ -50,6 +50,13 @@ enum {
 		NSMenuItem *quitItem = [[NSMenuItem alloc] initWithTitle:@"Quit MBColorMeter" action:@selector(quitApplication) keyEquivalent:@""];
 		quitItem.target = self;
 		
+		NSMenuItem *copyItem = [[NSMenuItem alloc] initWithTitle:@"Copy Current Color" action:@selector(copyColor) keyEquivalent:@"C"];
+		copyItem.keyEquivalentModifierMask = NSAlternateKeyMask | NSCommandKeyMask;
+		copyItem.target = self;
+		
+		NSMenuItem *holdItem = [[NSMenuItem alloc] initWithTitle:@"Hold Color" action:@selector(holdColor) keyEquivalent:@"H"];
+		holdItem.target = self;
+		
 		NSMenu *modeMenu = [[NSMenu alloc] initWithTitle:@"Color Mode"];
 		
 		NSMenuItem *modeHex			= [[NSMenuItem alloc] initWithTitle:@"Hexadecimal" action:@selector(changeColorMode:) keyEquivalent:@""];
@@ -72,11 +79,17 @@ enum {
 		colorModeItem.submenu = modeMenu;
 		
 		[appMenu addItem:colorModeItem];
+		[appMenu addItem:holdItem];
+		[appMenu addItem:copyItem];
 		[appMenu addItem:[NSMenuItem separatorItem]];
 		[appMenu addItem:quitItem];
 		
 		[statusBarItem setMenu:appMenu];
 		statusBarItem.highlightMode = YES;
+		
+		[NSEvent addGlobalMonitorForEventsMatchingMask:NSKeyDownMask handler:^(NSEvent *)event {
+			NSLog(@"woop event");
+		}];
     }
     return self;
 }
@@ -124,9 +137,9 @@ enum {
 	if(colorDisplayMode == ColorDisplayModeHex) {
 		titleString = [NSString stringWithFormat:@"#%02X%02X%02X", pixel[0], pixel[1], pixel[2]];
 	} else if(colorDisplayMode == ColorDisplayModeRGB255) {
-		titleString = [NSString stringWithFormat:@"RGB(%d, %d, %d)", pixel[0], pixel[1], pixel[2]];
+		titleString = [NSString stringWithFormat:@"RGB(%d,%d,%d)", pixel[0], pixel[1], pixel[2]];
 	} else if(colorDisplayMode == ColorDisplayModeRGBFloat) {
-		titleString = [NSString stringWithFormat:@"RGB(%0.2f, %0.2f, %0.2f)", pixel[0]/255.0, pixel[1]/255.0, pixel[2]/255.0];
+		titleString = [NSString stringWithFormat:@"RGB(%0.2f,%0.2f,%0.2f)", pixel[0]/255.0, pixel[1]/255.0, pixel[2]/255.0];
 	}
 	
 	[self.label setStringValue:titleString];
@@ -153,6 +166,14 @@ enum {
 
 -(void)quitApplication {
 	[[NSApplication sharedApplication] terminate:self];
+}
+
+-(void)holdColor {
+	NSLog(@"HOLDUP1");
+}
+
+-(void)copyColor {
+	NSLog(@"CopycopyColor!!");
 }
 
 @end
