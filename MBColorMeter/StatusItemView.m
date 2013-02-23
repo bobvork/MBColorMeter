@@ -9,20 +9,21 @@
 #import "StatusItemView.h"
 
 @implementation StatusItemView
-@synthesize label;
-@synthesize colorWell;
 
-- (id)initWithFrame:(NSRect)frame {
-    self = [super initWithFrame:frame];
-    if (self) {
-        // Initialization code here.
-    }
-    
-    return self;
+-(BOOL)acceptsFirstResponder {
+	return NO;
 }
-
-- (void)drawRect:(NSRect)dirtyRect {
-    // Drawing code here.
-}
+//- (id)initWithFrame:(NSRect)frame {
+//    self = [super initWithFrame:frame];
+//    if (self) {
+//        // Initialization code here.
+//    }
+//    
+//    return self;
+//}
+//
+//- (void)drawRect:(NSRect)dirtyRect {
+//    // Drawing code here.
+//}
 
 @end
