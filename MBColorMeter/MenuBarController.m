@@ -87,8 +87,26 @@ enum {
 		[statusBarItem setMenu:appMenu];
 		statusBarItem.highlightMode = YES;
 		
-		[NSEvent addGlobalMonitorForEventsMatchingMask:NSKeyDownMask handler:^(NSEvent *)event {
-			NSLog(@"woop event");
+		[NSEvent addGlobalMonitorForEventsMatchingMask:NSKeyDownMask handler:^(NSEvent *event) {
+			
+//			NSLog(@"Key: %huhc",event.keyCode);
+			
+			if(event.keyCode == 8 && (event.modifierFlags & NSCommandKeyMask) == NSCommandKeyMask && (event.modifierFlags & NSAlternateKeyMask) == NSAlternateKeyMask) {
+				NSLog(@"Copy Color?");
+			} else if(event.keyCode == 4 && (event.modifierFlags & NSCommandKeyMask) == NSCommandKeyMask && (event.modifierFlags & NSShiftKeyMask) == NSShiftKeyMask) {
+				NSLog(@"Hold");
+			}
+			
+			
+			/*
+			 
+			 modifiers kunnen beter door ook te checekn of sommigen NIET ingedrukt worden
+			 iets als
+			 
+			 event.modifierFlags == (NSCommandKeyMask | NSShiftKeyMask)
+			 
+			 */
+			
 		}];
     }
     return self;
