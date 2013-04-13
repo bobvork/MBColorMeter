@@ -14,8 +14,6 @@
 		0E5EBEC015B345060069BB02 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E5EBEBF15B345060069BB02 /* AppDelegate.m */; };
 		0E5EBEC315B345060069BB02 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0E5EBEC115B345060069BB02 /* MainMenu.xib */; };
 		0E5EBECB15B345A00069BB02 /* MenuBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E5EBECA15B345A00069BB02 /* MenuBarController.m */; };
-		0E5EBECE15B3671A0069BB02 /* StatusItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E5EBECD15B3671A0069BB02 /* StatusItemView.m */; };
-		0ED8D09B15B4957C008CB912 /* StatusItemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0ED8D09A15B4957C008CB912 /* StatusItemView.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,9 +32,6 @@
 		0E5EBEC215B345060069BB02 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		0E5EBEC915B345A00069BB02 /* MenuBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuBarController.h; sourceTree = "<group>"; };
 		0E5EBECA15B345A00069BB02 /* MenuBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MenuBarController.m; sourceTree = "<group>"; };
-		0E5EBECC15B3671A0069BB02 /* StatusItemView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StatusItemView.h; sourceTree = "<group>"; };
-		0E5EBECD15B3671A0069BB02 /* StatusItemView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StatusItemView.m; sourceTree = "<group>"; };
-		0ED8D09A15B4957C008CB912 /* StatusItemView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StatusItemView.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,9 +91,6 @@
 				0E5EBEB315B345060069BB02 /* Supporting Files */,
 				0E5EBEC915B345A00069BB02 /* MenuBarController.h */,
 				0E5EBECA15B345A00069BB02 /* MenuBarController.m */,
-				0E5EBECC15B3671A0069BB02 /* StatusItemView.h */,
-				0E5EBECD15B3671A0069BB02 /* StatusItemView.m */,
-				0ED8D09A15B4957C008CB912 /* StatusItemView.xib */,
 			);
 			path = MBColorMeter;
 			sourceTree = "<group>";
@@ -169,7 +161,6 @@
 				0E5EBEB715B345060069BB02 /* InfoPlist.strings in Resources */,
 				0E5EBEBD15B345060069BB02 /* Credits.rtf in Resources */,
 				0E5EBEC315B345060069BB02 /* MainMenu.xib in Resources */,
-				0ED8D09B15B4957C008CB912 /* StatusItemView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -183,7 +174,6 @@
 				0E5EBEB915B345060069BB02 /* main.m in Sources */,
 				0E5EBEC015B345060069BB02 /* AppDelegate.m in Sources */,
 				0E5EBECB15B345A00069BB02 /* MenuBarController.m in Sources */,
-				0E5EBECE15B3671A0069BB02 /* StatusItemView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -267,6 +257,7 @@
 		0E5EBEC715B345060069BB02 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MBColorMeter/MBColorMeter-Prefix.pch";
 				INFOPLIST_FILE = "MBColorMeter/MBColorMeter-Info.plist";
@@ -278,6 +269,7 @@
 		0E5EBEC815B345060069BB02 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MBColorMeter/MBColorMeter-Prefix.pch";
 				INFOPLIST_FILE = "MBColorMeter/MBColorMeter-Info.plist";

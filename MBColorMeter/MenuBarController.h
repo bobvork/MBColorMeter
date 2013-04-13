@@ -9,27 +9,19 @@
 #import <Foundation/Foundation.h>
 
 typedef enum {
-	ColorDisplayModeRGB255 = 0,
+	ColorDisplayModeNone = 0,
+	ColorDisplayModeRGB255,
 	ColorDisplayModeRGBFloat,
-	ColorDisplayModeHex,
-
-	// Not a display mode, only used internally to toggle:
-	ColorDisplayModeNumber		
+	ColorDisplayModeHex
 } ColorDisplayMode;
 
 @interface MenuBarController : NSObject {
 	NSStatusItem *statusBarItem;
 	int testInt;
 	ColorDisplayMode colorDisplayMode;
-	NSInteger lastX, lastY;
 }
 
-@property (nonatomic, retain) NSString *statusText;
 @property (nonatomic, retain) NSTimer *mouseUpdateTimer;
-@property (weak) IBOutlet NSView *cView;
-@property (weak) IBOutlet NSColorWell *colorWell;
-@property (weak) IBOutlet NSTextField *label;
-
 @property (nonatomic, retain) NSDictionary *titleAttributes;
 
 @end
