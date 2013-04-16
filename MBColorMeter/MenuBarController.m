@@ -13,7 +13,13 @@ enum {
 	ColorModeTagRGB255
 };
 
+enum {
+	CMHotKeyHold = 1,
+	CMHotKeyCopy
+};
+
 #import "MenuBarController.h"
+#import <Carbon/Carbon.h>
 
 @interface MenuBarController () {
     BOOL holding;
@@ -96,31 +102,54 @@ enum {
 		[statusBarItem setMenu:appMenu];
 		statusBarItem.highlightMode = YES;
 		
-		[NSEvent addGlobalMonitorForEventsMatchingMask:NSKeyDownMask handler:^(NSEvent *event) {
+
+		// Use Carbon to register global hotkeys
+		// We use this for holding the color, and
+		// for copying it to the clipboard
 			
-			//NSLog(@"Key: %huhc",event.keyCode);
-			
-			if(event.keyCode == 8 && (event.modifierFlags & NSCommandKeyMask) == NSCommandKeyMask && (event.modifierFlags & NSAlternateKeyMask) == NSAlternateKeyMask) {
-				NSLog(@"Copy Color?");
-				[self copyColor];
-			} else if(event.keyCode == 4 && (event.modifierFlags & NSCommandKeyMask) == NSCommandKeyMask && (event.modifierFlags & NSShiftKeyMask) == NSShiftKeyMask) {
-				NSLog(@"Hold");
-				[self holdColor];
-			}
-			
-			
-			/*
-			 
-			 modifiers kunnen beter door ook te checekn of sommigen NIET ingedrukt worden
-			 iets als
-			 
-			 event.modifierFlags == (NSCommandKeyMask | NSShiftKeyMask)
-			 
-			 */
-			
-		}];
+		EventHotKeyRef	hotKeyRef;
+		EventHotKeyID	hotKeyHoldId, hotKeyCopyId;
+		EventTypeSpec	eventType;
+		
+		eventType.eventClass	= kEventClassKeyboard;
+		eventType.eventKind		= kEventHotKeyPressed;
+		
+		InstallApplicationEventHandler(&mbHotKeyHandler, 1, &eventType, self, NULL);
+		
+		hotKeyHoldId.signature = 'hkhl';
+		hotKeyHoldId.id = CMHotKeyHold;
+		
+		hotKeyCopyId.signature = 'hkcp';
+		hotKeyCopyId.id = CMHotKeyCopy;
+		
+		RegisterEventHotKey(kVK_ANSI_C, cmdKey + shiftKey, hotKeyCopyId, GetApplicationEventTarget(), 0, &hotKeyRef);
+		RegisterEventHotKey(kVK_ANSI_H, cmdKey + shiftKey, hotKeyHoldId, GetApplicationEventTarget(), 0, &hotKeyRef);
+		
     }
     return self;
+}
+
+OSStatus mbHotKeyHandler(EventHandlerCallRef nextHandler, EventRef event, void *userData) {
+	if( userData && [(id)userData isKindOfClass:MenuBarController.class]) {
+		
+		MenuBarController *controller = (MenuBarController*)userData;
+		
+		EventHotKeyID eventHotKeyId;
+		GetEventParameter(event, kEventParamDirectObject, typeEventHotKeyID, NULL, sizeof(eventHotKeyId), NULL, &eventHotKeyId);
+		int hotKey = eventHotKeyId.id;
+				
+		switch (hotKey) {
+			case CMHotKeyCopy:
+				[controller copyColor];
+				break;
+			case CMHotKeyHold:
+				[controller holdColor];
+				break;
+			default:
+				break;
+		}
+	}
+	return noErr;
 }
 
 - (void)dealloc {

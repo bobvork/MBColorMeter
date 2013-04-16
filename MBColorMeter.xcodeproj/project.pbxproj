@@ -14,6 +14,8 @@
 		0E5EBEC015B345060069BB02 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E5EBEBF15B345060069BB02 /* AppDelegate.m */; };
 		0E5EBEC315B345060069BB02 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0E5EBEC115B345060069BB02 /* MainMenu.xib */; };
 		0E5EBECB15B345A00069BB02 /* MenuBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E5EBECA15B345A00069BB02 /* MenuBarController.m */; };
+		0E612112171DE4D30075F018 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E612111171DE4D30075F018 /* Carbon.framework */; };
+		0E612115171DE4F90075F018 /* MBShortCutController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E612114171DE4F90075F018 /* MBShortCutController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +34,9 @@
 		0E5EBEC215B345060069BB02 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		0E5EBEC915B345A00069BB02 /* MenuBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuBarController.h; sourceTree = "<group>"; };
 		0E5EBECA15B345A00069BB02 /* MenuBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MenuBarController.m; sourceTree = "<group>"; };
+		0E612111171DE4D30075F018 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
+		0E612113171DE4F90075F018 /* MBShortCutController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBShortCutController.h; sourceTree = "<group>"; };
+		0E612114171DE4F90075F018 /* MBShortCutController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBShortCutController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -39,6 +44,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0E612112171DE4D30075F018 /* Carbon.framework in Frameworks */,
 				0E5EBEAD15B345060069BB02 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -49,6 +55,7 @@
 		0E5EBE9D15B345060069BB02 = {
 			isa = PBXGroup;
 			children = (
+				0E612111171DE4D30075F018 /* Carbon.framework */,
 				0E5EBEB215B345060069BB02 /* MBColorMeter */,
 				0E5EBEAB15B345060069BB02 /* Frameworks */,
 				0E5EBEA915B345060069BB02 /* Products */,
@@ -91,6 +98,8 @@
 				0E5EBEB315B345060069BB02 /* Supporting Files */,
 				0E5EBEC915B345A00069BB02 /* MenuBarController.h */,
 				0E5EBECA15B345A00069BB02 /* MenuBarController.m */,
+				0E612113171DE4F90075F018 /* MBShortCutController.h */,
+				0E612114171DE4F90075F018 /* MBShortCutController.m */,
 			);
 			path = MBColorMeter;
 			sourceTree = "<group>";
@@ -174,6 +183,7 @@
 				0E5EBEB915B345060069BB02 /* main.m in Sources */,
 				0E5EBEC015B345060069BB02 /* AppDelegate.m in Sources */,
 				0E5EBECB15B345A00069BB02 /* MenuBarController.m in Sources */,
+				0E612115171DE4F90075F018 /* MBShortCutController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
