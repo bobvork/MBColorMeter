@@ -21,9 +21,13 @@ enum {
 // Menu Items:
 enum {
 	CMMenuTagHoldColor	= 123,
-	CMMenuTagCopyColor	= 124,
-	CMMenuTagShowColor	= 125
+	CMMenuTagCopyColor,
+	CMMenuTagShowColor,
+	CMMenuTagModeMenu
 };
+
+#define USERDEF_COLORMODE	@"~~USERDEF_COLORMODE~~"
+#define USERDEF_SHOWCOLOR	@"~~USERDEF_SHOWCOLOR~~"
 
 #import "MenuBarController.h"
 #import <Carbon/Carbon.h>
@@ -49,7 +53,18 @@ enum {
         holding = NO;
 
 		//TODO: get this from userdefaults:
-		showColorCode			= YES;
+		
+		NSInteger colorMode = [[NSUserDefaults standardUserDefaults] integerForKey:USERDEF_COLORMODE];
+		if(colorMode != 0) {
+			// Userdefaults have been saved before
+			showColorCode		= [[NSUserDefaults standardUserDefaults] boolForKey:USERDEF_SHOWCOLOR];
+			colorDisplayMode	= (int)colorMode;
+		} else {
+			showColorCode		= YES;
+			colorDisplayMode	= ColorDisplayModeHex;
+		}
+		
+		
 		self.lastCopiedColors	= [NSMutableArray array];
 
         // Install status item into the menu bar
@@ -58,12 +73,12 @@ enum {
 		[statusBarItem retain];
 		
 		
-		NSFont *font = [NSFont userFixedPitchFontOfSize:12];
+		NSFont *font = [NSFont userFixedPitchFontOfSize:11];
 		self.titleAttributes = [NSDictionary dictionaryWithObject:font forKey:NSFontAttributeName];
 		
 		mouseUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:0.15 target:self selector:@selector(updateMouseInfo) userInfo:nil repeats:YES];
 		
-		colorDisplayMode = ColorDisplayModeHex;
+
 		lastX = lastY = -1;
 		
 		// Setup menu
@@ -94,18 +109,22 @@ enum {
 		
 		modeHex.target		= self;
 		modeHex.tag			= ColorModeTagHex;
+		modeHex.state		= (colorMode == ColorDisplayModeHex)? NSOnState : NSOffState;
 		
 		modeRGBFloat.target = self;
 		modeRGBFloat.tag	= ColorModeTagRGBFloat;
+		modeRGBFloat.state	= (colorMode == ColorDisplayModeRGBFloat)? NSOnState : NSOffState;
 		
 		modeRGB255.target	= self;
 		modeRGB255.tag		= ColorModeTagRGB255;
+		modeRGB255.state	= (colorMode == ColorDisplayModeRGB255)? NSOnState : NSOffState;
 		
 		[modeMenu addItem:modeHex];
 		[modeMenu addItem:modeRGBFloat];
 		[modeMenu addItem:modeRGB255];
 		
 		colorModeItem.submenu = modeMenu;
+		colorModeItem.tag = CMMenuTagModeMenu;
 		
 		[self.appMenu addItem:colorModeItem];
 		[self.appMenu addItem:showCodeItem];
@@ -218,6 +237,7 @@ OSStatus mbHotKeyHandler(EventHandlerCallRef nextHandler, EventRef event, void *
 	// Draw color:	
 	CGColorRef drawColor = CGColorCreateGenericRGB(currentColor[0]/255.0, currentColor[1]/255.0, currentColor[2]/255.0, currentColor[3]/255.0);
 	CGContextSetFillColorWithColor(drawContext, drawColor);
+	CGColorRelease(drawColor);
 	CGContextFillRect(drawContext, CGRectMake(0, 0, 12, 12));
 	// Draw border
 	[[NSColor darkGrayColor] setStroke];
@@ -234,6 +254,7 @@ OSStatus mbHotKeyHandler(EventHandlerCallRef nextHandler, EventRef event, void *
 	
 	CGColorSpaceRelease(colorSpace);
 	CGContextRelease(drawContext);
+	CGImageRelease(statusImg);
 	
 	statusBarItem.image = colorImage;
 	
@@ -245,21 +266,32 @@ OSStatus mbHotKeyHandler(EventHandlerCallRef nextHandler, EventRef event, void *
 	NSString *titleString = @"";
 	
 	if(showColorCode) {		
-		if(ColorDisplayModeHex == colorDisplayMode) {
-			titleString = [NSString stringWithFormat:@"#%02X%02X%02X", currentColor[0], currentColor[1], currentColor[2]];
-		} else if(ColorDisplayModeRGB255 == colorDisplayMode) {
-			titleString = [NSString stringWithFormat:@"RGB(%d,%d,%d)", currentColor[0], currentColor[1], currentColor[2]];
-		} else if(ColorDisplayModeRGBFloat == colorDisplayMode) {
-			titleString = [NSString stringWithFormat:@"RGB(%0.2f,%0.2f,%0.2f)", currentColor[0]/255.0, currentColor[1]/255.0, currentColor[2]/255.0];
-		}
+		titleString = [self stringForCurrentColor];
 	}
 	
 	statusBarItem.attributedTitle = [[[NSAttributedString alloc] initWithString:titleString attributes:self.titleAttributes] autorelease];
 }
 
+-(NSString*)stringForCurrentColor {
+	if(ColorDisplayModeHex == colorDisplayMode) {
+		return [NSString stringWithFormat:@"#%02X%02X%02X", currentColor[0], currentColor[1], currentColor[2]];
+	} else if(ColorDisplayModeRGB255 == colorDisplayMode) {
+		return [NSString stringWithFormat:@"rgb(%d,%d,%d)", currentColor[0], currentColor[1], currentColor[2]];
+	} else if(ColorDisplayModeRGBFloat == colorDisplayMode) {
+		return [NSString stringWithFormat:@"rgb(%0.2f,%0.2f,%0.2f)", currentColor[0]/255.0, currentColor[1]/255.0, currentColor[2]/255.0];
+	}
+	
+	return nil;
+}
+
 #pragma mark - Menu Item methods
 
 -(void)changeColorMode:(NSMenuItem*)senderItem {
+	for (NSMenuItem *item in senderItem.parentItem.submenu.itemArray) {
+		item.state = NSOffState;
+	}
+	senderItem.state = NSOnState;
+	
 	if(senderItem.tag == ColorModeTagHex) {
 		colorDisplayMode = ColorDisplayModeHex;
 	} else if (senderItem.tag == ColorModeTagRGBFloat) {
@@ -269,6 +301,8 @@ OSStatus mbHotKeyHandler(EventHandlerCallRef nextHandler, EventRef event, void *
 	} else if (senderItem.tag == ColorModeTagNone) {
 		colorDisplayMode = ColorDisplayModeNone;
 	}
+	[[NSUserDefaults standardUserDefaults] setInteger:colorDisplayMode forKey:USERDEF_COLORMODE];
+	[[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 -(void)quitApplication {
@@ -278,6 +312,8 @@ OSStatus mbHotKeyHandler(EventHandlerCallRef nextHandler, EventRef event, void *
 -(void)toggleColorCode:(NSMenuItem*)senderItem {
 	showColorCode = !showColorCode;
 	senderItem.state = showColorCode? NSOnState : NSOffState;
+	[[NSUserDefaults standardUserDefaults] setBool:showColorCode forKey:USERDEF_SHOWCOLOR];
+	[[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 -(void)holdColor:(NSMenuItem*)senderItem {
@@ -286,7 +322,10 @@ OSStatus mbHotKeyHandler(EventHandlerCallRef nextHandler, EventRef event, void *
 }
 
 -(void)copyColor:(NSMenuItem*)senderItem {
-	NSLog(@"CopycopyColor!!");
+	NSString *colorString = [self stringForCurrentColor];	
+	NSPasteboard *pBoard = [NSPasteboard generalPasteboard];
+	[pBoard clearContents];
+	[pBoard writeObjects:@[colorString]];
 }
 
 @end
