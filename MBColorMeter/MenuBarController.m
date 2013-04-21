@@ -18,15 +18,24 @@ enum {
 	CMHotKeyCopy
 };
 
+// Menu Items:
+enum {
+	CMMenuTagHoldColor	= 123,
+	CMMenuTagCopyColor	= 124,
+	CMMenuTagShowColor	= 125
+};
+
 #import "MenuBarController.h"
 #import <Carbon/Carbon.h>
 
 @interface MenuBarController () {
-    BOOL holding;
+    BOOL holding, showColorCode;
 	NSInteger lastX, lastY;
+	unsigned char currentColor[4];
 }
 
 @property (nonatomic, retain) NSMutableArray *lastCopiedColors;
+@property (nonatomic, retain) NSMenu *appMenu;
 
 @end
 
@@ -38,13 +47,16 @@ enum {
     self = [super init];
     if (self) {
         holding = NO;
-		self.lastCopiedColors = [NSMutableArray array];
+
+		//TODO: get this from userdefaults:
+		showColorCode			= YES;
+		self.lastCopiedColors	= [NSMutableArray array];
+
         // Install status item into the menu bar
-        statusBarItem = [[NSStatusBar systemStatusBar] statusItemWithLength:NSVariableStatusItemLength];
-		statusBarItem.title = @"";
+        statusBarItem			= [[NSStatusBar systemStatusBar] statusItemWithLength:NSVariableStatusItemLength];
+		statusBarItem.title		= @"";
 		[statusBarItem retain];
 		
-		//[NSBundle loadNibNamed:@"StatusItemView" owner:self];
 		
 		NSFont *font = [NSFont userFixedPitchFontOfSize:12];
 		self.titleAttributes = [NSDictionary dictionaryWithObject:font forKey:NSFontAttributeName];
@@ -55,24 +67,30 @@ enum {
 		lastX = lastY = -1;
 		
 		// Setup menu
-		NSMenu *appMenu = [[[NSMenu alloc] initWithTitle:@"Menu Bar Color Meter"] autorelease];
+		self.appMenu = [[[NSMenu alloc] initWithTitle:@"Menu Bar Color Meter"] autorelease];
 		NSMenuItem *colorModeItem = [[[NSMenuItem alloc] initWithTitle:@"Color Code Format" action:NULL keyEquivalent:@""] autorelease];
 		NSMenuItem *quitItem = [[[NSMenuItem alloc] initWithTitle:@"Quit MBColorMeter" action:@selector(quitApplication) keyEquivalent:@""] autorelease];
 		quitItem.target = self;
 		
-		NSMenuItem *copyItem = [[[NSMenuItem alloc] initWithTitle:@"Copy Current Color" action:@selector(copyColor) keyEquivalent:@"C"] autorelease];
-		copyItem.keyEquivalentModifierMask = NSAlternateKeyMask | NSCommandKeyMask;
-		copyItem.target = self;
+		NSMenuItem *showCodeItem	= [[[NSMenuItem alloc] initWithTitle:@"Show Color Code" action:@selector(toggleColorCode:) keyEquivalent:@""] autorelease];
+		showCodeItem.target			= self;
+		showCodeItem.state			= showColorCode? NSOnState : NSOffState;
 		
-		NSMenuItem *holdItem = [[[NSMenuItem alloc] initWithTitle:@"Hold Color" action:@selector(holdColor) keyEquivalent:@"H"] autorelease];
-		holdItem.target = self;
+		NSMenuItem *copyItem		= [[[NSMenuItem alloc] initWithTitle:@"Copy Current Color" action:@selector(copyColor:) keyEquivalent:@"C"] autorelease];
+		copyItem.keyEquivalentModifierMask = NSAlternateKeyMask | NSCommandKeyMask;
+		copyItem.target				= self;
+		copyItem.tag				= CMMenuTagCopyColor;
+		
+		NSMenuItem *holdItem		= [[[NSMenuItem alloc] initWithTitle:@"Hold Color" action:@selector(holdColor:) keyEquivalent:@"H"] autorelease];
+		holdItem.target				= self;
+		holdItem.state				= holding? NSOnState : NSOffState;
+		holdItem.tag				= CMMenuTagHoldColor;
 		
 		NSMenu *modeMenu = [[[NSMenu alloc] initWithTitle:@"Color Mode"] autorelease];
 		
 		NSMenuItem *modeHex         = [[[NSMenuItem alloc] initWithTitle:@"Hexadecimal" action:@selector(changeColorMode:) keyEquivalent:@""] autorelease];
 		NSMenuItem *modeRGBFloat    = [[[NSMenuItem alloc] initWithTitle:@"RGB (float)" action:@selector(changeColorMode:) keyEquivalent:@""] autorelease];
 		NSMenuItem *modeRGB255      = [[[NSMenuItem alloc] initWithTitle:@"RGB (255)" action:@selector(changeColorMode:) keyEquivalent:@""] autorelease];
-        NSMenuItem *modeNone        = [[[NSMenuItem alloc] initWithTitle:@"Don't Show Color Code" action:@selector(changeColorMode:) keyEquivalent:@""] autorelease];
 		
 		modeHex.target		= self;
 		modeHex.tag			= ColorModeTagHex;
@@ -82,24 +100,21 @@ enum {
 		
 		modeRGB255.target	= self;
 		modeRGB255.tag		= ColorModeTagRGB255;
-        
-        modeNone.target     = self;
-        modeNone.tag        = ColorModeTagNone;
 		
 		[modeMenu addItem:modeHex];
 		[modeMenu addItem:modeRGBFloat];
 		[modeMenu addItem:modeRGB255];
-		[modeMenu addItem:modeNone];
 		
 		colorModeItem.submenu = modeMenu;
 		
-		[appMenu addItem:colorModeItem];
-		[appMenu addItem:holdItem];
-		[appMenu addItem:copyItem];
-		[appMenu addItem:[NSMenuItem separatorItem]];
-		[appMenu addItem:quitItem];
+		[self.appMenu addItem:colorModeItem];
+		[self.appMenu addItem:showCodeItem];
+		[self.appMenu addItem:holdItem];
+		[self.appMenu addItem:copyItem];
+		[self.appMenu addItem:[NSMenuItem separatorItem]];
+		[self.appMenu addItem:quitItem];
 		
-		[statusBarItem setMenu:appMenu];
+		[statusBarItem setMenu:self.appMenu];
 		statusBarItem.highlightMode = YES;
 		
 
@@ -140,10 +155,10 @@ OSStatus mbHotKeyHandler(EventHandlerCallRef nextHandler, EventRef event, void *
 				
 		switch (hotKey) {
 			case CMHotKeyCopy:
-				[controller copyColor];
+				[controller copyColor:[controller.appMenu itemWithTag:CMMenuTagCopyColor]];
 				break;
 			case CMHotKeyHold:
-				[controller holdColor];
+				[controller holdColor:[controller.appMenu itemWithTag:CMMenuTagHoldColor]];
 				break;
 			default:
 				break;
@@ -153,6 +168,7 @@ OSStatus mbHotKeyHandler(EventHandlerCallRef nextHandler, EventRef event, void *
 }
 
 - (void)dealloc {
+	[_appMenu release];
 	[mouseUpdateTimer invalidate];
 	[mouseUpdateTimer release];
 	[titleAttributes release];	
@@ -161,78 +177,84 @@ OSStatus mbHotKeyHandler(EventHandlerCallRef nextHandler, EventRef event, void *
 }
 
 - (void)updateMouseInfo {
-    // Do not update if the user wants to hold the current colour:
-    if( holding ) {
-        return;
-    }
-	NSPoint mPoint = [NSEvent mouseLocation];
 	
-	NSRect screenFrame = [[NSScreen mainScreen] frame];
-	NSInteger x = floor(mPoint.x);
-	NSInteger y = floor(screenFrame.size.height - mPoint.y);
-	
-	if(lastX == x && lastY == y) {
-		return;
+	if(!holding) {
+		[self readColorFromScreen];
 	}
+	
+	[self updateColor];
+		
+	[self updateLabel];
+}
+
+-(void)readColorFromScreen {
+	NSPoint mPoint		= [NSEvent mouseLocation];
+	
+	NSRect screenFrame	= [[NSScreen mainScreen] frame];
+	NSInteger x			= floor(mPoint.x);
+	NSInteger y			= floor(screenFrame.size.height - mPoint.y);
+	
+	if(lastX == x && lastY == y)	return;
 	
 	lastX = x;	lastY = y;
 	
-	CGImageRef pixelImageRef = CGDisplayCreateImageForRect(CGMainDisplayID(), CGRectMake(x,y, 1, 1));
-	CGColorSpaceRef colorSpace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
-	unsigned char pixel[4] = {0};
-	CGContextRef readContext = CGBitmapContextCreate(pixel, 1, 1, 8, 4,
-												 colorSpace,
-												 kCGImageAlphaPremultipliedLast);
-
+	CGImageRef pixelImageRef	= CGDisplayCreateImageForRect(CGMainDisplayID(), CGRectMake(x,y, 1, 1));
+	CGColorSpaceRef colorSpace	= CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
+	CGContextRef readContext	= CGBitmapContextCreate(currentColor, 1, 1, 8, 4,
+														colorSpace,
+														kCGImageAlphaPremultipliedLast);
+	
 	CGContextDrawImage(readContext, CGRectMake(0, 0, 1, 1),pixelImageRef);
 	CGContextRelease(readContext);
-	
+	CGColorSpaceRelease(colorSpace);
+	CGImageRelease(pixelImageRef);
+}
 
-	
+-(void)updateColor {
 	
 	// Create image to show in the Menu bar:
+	CGColorSpaceRef colorSpace	= CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
 	CGContextRef drawContext = CGBitmapContextCreate(NULL, 12, 12, 8, 48, colorSpace, kCGImageAlphaPremultipliedLast);
-	
-	
-	CGContextDrawImage(drawContext, CGRectMake(0, 0, 12, 12), pixelImageRef);
+	// Draw color:	
+	CGColorRef drawColor = CGColorCreateGenericRGB(currentColor[0]/255.0, currentColor[1]/255.0, currentColor[2]/255.0, currentColor[3]/255.0);
+	CGContextSetFillColorWithColor(drawContext, drawColor);
+	CGContextFillRect(drawContext, CGRectMake(0, 0, 12, 12));
 	// Draw border
 	[[NSColor darkGrayColor] setStroke];
-
 	CGContextBeginPath(drawContext);
-//	CGMutablePathRef borderPath = CGPathCreateMutable();
-	//CGPathAddRect(borderPath, NULL, CGRectMake(1, 1, 10, 10));
 	
 	CGContextMoveToPoint(drawContext, 1, 1);
 	CGContextAddRect(drawContext, CGRectMake(.5, .5, 11, 11));
-	
 	CGContextStrokePath(drawContext);
-
-	CGContextDrawPath(drawContext, kCGPathFill);
-
+	
 	CGImageRef statusImg = CGBitmapContextCreateImage(drawContext);
-
+	
+	// Get image from the context we drew on:
 	NSImage *colorImage = [[[NSImage alloc] initWithCGImage:statusImg size:NSMakeSize(12, 12)] autorelease];
 	
 	CGColorSpaceRelease(colorSpace);
 	CGContextRelease(drawContext);
-		
+	
 	statusBarItem.image = colorImage;
+	
 
-	CGImageRelease(pixelImageRef);
+}
+
+-(void)updateLabel {
+	// Set title of the menuitem:
+	NSString *titleString = @"";
 	
-	NSString *titleString = nil;
-	
-	if(ColorDisplayModeHex == colorDisplayMode) {
-		titleString = [NSString stringWithFormat:@"#%02X%02X%02X", pixel[0], pixel[1], pixel[2]];
-	} else if(ColorDisplayModeRGB255 == colorDisplayMode) {
-		titleString = [NSString stringWithFormat:@"RGB(%d,%d,%d)", pixel[0], pixel[1], pixel[2]];
-	} else if(ColorDisplayModeRGBFloat == colorDisplayMode) {
-		titleString = [NSString stringWithFormat:@"RGB(%0.2f,%0.2f,%0.2f)", pixel[0]/255.0, pixel[1]/255.0, pixel[2]/255.0];
-	} else if(ColorDisplayModeNone == colorDisplayMode) {
-		titleString = @"";
+	if(showColorCode) {		
+		if(ColorDisplayModeHex == colorDisplayMode) {
+			titleString = [NSString stringWithFormat:@"#%02X%02X%02X", currentColor[0], currentColor[1], currentColor[2]];
+		} else if(ColorDisplayModeRGB255 == colorDisplayMode) {
+			titleString = [NSString stringWithFormat:@"RGB(%d,%d,%d)", currentColor[0], currentColor[1], currentColor[2]];
+		} else if(ColorDisplayModeRGBFloat == colorDisplayMode) {
+			titleString = [NSString stringWithFormat:@"RGB(%0.2f,%0.2f,%0.2f)", currentColor[0]/255.0, currentColor[1]/255.0, currentColor[2]/255.0];
+		}
 	}
 	
-	statusBarItem.attributedTitle = [[[NSAttributedString alloc] initWithString:titleString attributes:self.titleAttributes] autorelease];	
+	statusBarItem.attributedTitle = [[[NSAttributedString alloc] initWithString:titleString attributes:self.titleAttributes] autorelease];
 }
 
 #pragma mark - Menu Item methods
@@ -253,14 +275,17 @@ OSStatus mbHotKeyHandler(EventHandlerCallRef nextHandler, EventRef event, void *
 	[[NSApplication sharedApplication] terminate:self];
 }
 
--(void)holdColor {
-	NSLog(@"HOLDUP1");
-	
-	
-    holding = !holding;
+-(void)toggleColorCode:(NSMenuItem*)senderItem {
+	showColorCode = !showColorCode;
+	senderItem.state = showColorCode? NSOnState : NSOffState;
 }
 
--(void)copyColor {
+-(void)holdColor:(NSMenuItem*)senderItem {
+    holding = !holding;
+	senderItem.state = holding? NSOnState : NSOffState;
+}
+
+-(void)copyColor:(NSMenuItem*)senderItem {
 	NSLog(@"CopycopyColor!!");
 }
 
