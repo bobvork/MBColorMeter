@@ -92,7 +92,7 @@ enum {
 		showCodeItem.state			= showColorCode? NSOnState : NSOffState;
 		
 		NSMenuItem *copyItem		= [[[NSMenuItem alloc] initWithTitle:@"Copy Current Color" action:@selector(copyColor:) keyEquivalent:@"C"] autorelease];
-		copyItem.keyEquivalentModifierMask = NSAlternateKeyMask | NSCommandKeyMask;
+		copyItem.keyEquivalentModifierMask = NSAlternateKeyMask | NSCommandKeyMask | NSShiftKeyMask;
 		copyItem.target				= self;
 		copyItem.tag				= CMMenuTagCopyColor;
 		
@@ -156,7 +156,7 @@ enum {
 		hotKeyCopyId.signature = 'hkcp';
 		hotKeyCopyId.id = CMHotKeyCopy;
 		
-		RegisterEventHotKey(kVK_ANSI_C, cmdKey + shiftKey, hotKeyCopyId, GetApplicationEventTarget(), 0, &hotKeyRef);
+		RegisterEventHotKey(kVK_ANSI_C, cmdKey + shiftKey + optionKey, hotKeyCopyId, GetApplicationEventTarget(), 0, &hotKeyRef);
 		RegisterEventHotKey(kVK_ANSI_H, cmdKey + shiftKey, hotKeyHoldId, GetApplicationEventTarget(), 0, &hotKeyRef);
 		
     }
