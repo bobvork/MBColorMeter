@@ -238,13 +238,16 @@ OSStatus mbHotKeyHandler(EventHandlerCallRef nextHandler, EventRef event, void *
 	CGColorRef drawColor = CGColorCreateGenericRGB(currentColor[0]/255.0, currentColor[1]/255.0, currentColor[2]/255.0, currentColor[3]/255.0);
 	CGContextSetFillColorWithColor(drawContext, drawColor);
 	CGColorRelease(drawColor);
-	CGContextFillRect(drawContext, CGRectMake(0, 0, 12, 12));
+//	CGContextFillRect(drawContext, CGRectMake(0, 0, 12, 12));
+	CGContextFillEllipseInRect(drawContext, CGRectMake(0, 0, 12, 12));
 	// Draw border
 	[[NSColor darkGrayColor] setStroke];
 	CGContextBeginPath(drawContext);
 	
 	CGContextMoveToPoint(drawContext, 1, 1);
-	CGContextAddRect(drawContext, CGRectMake(.5, .5, 11, 11));
+	CGContextSetLineWidth(drawContext, 0.5);
+//	CGContextAddRect(drawContext, CGRectMake(.5, .5, 11, 11));
+	CGContextAddEllipseInRect(drawContext, CGRectMake(.5, .5, 11, 11));
 	CGContextStrokePath(drawContext);
 	
 	CGImageRef statusImg = CGBitmapContextCreateImage(drawContext);
